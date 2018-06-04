@@ -30,7 +30,7 @@ class Operator {
     }
 
     void set_keyscale(uint8_t keyscale) {
-      levels &= 0x3f; //63;
+      levels &= 0x3f;
       levels |= (keyscale << 6);
     }
 
@@ -57,6 +57,10 @@ class Operator {
     void set_release(uint8_t release) {
       sustain_release &= 0xf0;
       sustain_release |= (release & 0x0f);
+    }
+
+    void set_waveform(uint8_t wave) {
+      waveform = wave & 0x07;
     }
 
   private:
