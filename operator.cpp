@@ -28,6 +28,37 @@ class Operator {
       options &= 0xf0;
       options |= (multiplier & 0x0f);
     }
+
+    void set_keyscale(uint8_t keyscale) {
+      levels &= 0x3f; //63;
+      levels |= (keyscale << 6);
+    }
+
+    void set_level(uint8_t level) {
+      levels &= 0xc0;
+      levels |= (level & 0x3f);
+    }
+    
+    void set_attack(uint8_t attack) {
+      attack_decay &= 0x0f;
+      attack_decay |= (attack << 4);
+    }
+
+    void set_decay(uint8_t decay) {
+      attack_decay &= 0xf0;
+      attack_decay |= (decay & 0x0f);
+    }
+    
+    void set_sustain(uint8_t sustain) {
+      sustain_release &= 0x0f;
+      sustain_release |= (sustain << 4);
+    }
+
+    void set_release(uint8_t release) {
+      sustain_release &= 0xf0;
+      sustain_release |= (release & 0x0f);
+    }
+
   private:
     uint8_t options;
     uint8_t levels;
