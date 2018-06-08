@@ -6,7 +6,7 @@
 #define CH_RIGHT   32
 #define CH_C       64
 #define CH_D       128
-
+#define CH_SYN     1
 
 class Channel {
   public:
@@ -31,6 +31,12 @@ class Channel {
     void set_feedback(uint8_t feedback) {
       note_info &= 0xf1;
       note_info |= ((feedback & 0x07) << 1);
+    }
+    void set_syn(void) {
+      flags |= CH_SYN;
+    }
+    void unset_syn(void) {
+      flags &= ~(CH_SYN);
     }
   private:
     uint8_t frequency;  
