@@ -1,4 +1,5 @@
 #include <cstdint>
+#include "component.h"
 
 #define CH_NOTE_ON 32
 
@@ -8,7 +9,7 @@
 #define CH_D       128
 #define CH_SYN     1
 
-class Channel {
+class Channel : Component{
   public:
     void set_frequency(uint16_t freq) {
       frequency = freq;
@@ -35,11 +36,8 @@ class Channel {
     void set_syn(void) {
       flags |= CH_SYN;
     }
-    void unset_syn(void) {
-      flags &= ~(CH_SYN);
-    }
+
   private:
     uint8_t frequency;  
     uint8_t note_info;
-    uint8_t flags;
 };
