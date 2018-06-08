@@ -2,6 +2,12 @@
 
 #define CH_NOTE_ON 32
 
+#define CH_LEFT    16
+#define CH_RIGHT   32
+#define CH_C       64
+#define CH_D       128
+
+
 class Channel {
   public:
     void set_frequency(uint16_t freq) {
@@ -19,11 +25,15 @@ class Channel {
     }
 
     void set_block_number(uint8_t block) {
-      note_info &= 0x1c; // abcdef
-      note_info |= (block << 2)
+      note_info &= 0xe3; // abcdef
+      note_info |= ((block & 0x07) << 2);
     }
-
+    void set_feedback(uint8_t feedback) {
+      note_info &= 0xf1;
+      note_info |= ((feedback & 0x07) << 1);
+    }
   private:
     uint8_t frequency;  
     uint8_t note_info;
+    uint8_t flags;
 };
