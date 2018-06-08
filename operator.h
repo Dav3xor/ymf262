@@ -31,7 +31,7 @@ class Operator {
 
     void set_keyscale(uint8_t keyscale) {
       levels &= 0x3f;
-      levels |= (keyscale << 6);
+      levels |= ((keyscale & 0x03) << 6);
     }
 
     void set_level(uint8_t level) {
@@ -41,7 +41,7 @@ class Operator {
     
     void set_attack(uint8_t attack) {
       attack_decay &= 0x0f;
-      attack_decay |= (attack << 4);
+      attack_decay |= ((attack & 0x0f) << 4);
     }
 
     void set_decay(uint8_t decay) {
@@ -51,7 +51,7 @@ class Operator {
     
     void set_sustain(uint8_t sustain) {
       sustain_release &= 0x0f;
-      sustain_release |= (sustain << 4);
+      sustain_release |= ((sustain & 0x0f) << 4);
     }
 
     void set_release(uint8_t release) {
