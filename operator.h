@@ -9,7 +9,8 @@
 
 class Operator : Component {
   public:
-    Operator() {
+    Operator(uint8_t newid) {
+      id              = newid;
       levels          = 0;
       attack_decay    = 0;
       sustain_release = 0;
@@ -56,6 +57,7 @@ class Operator : Component {
     }
 
   private:
+    uint8_t id;
     uint8_t levels;
     uint8_t attack_decay;
     uint8_t sustain_release;

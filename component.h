@@ -1,3 +1,5 @@
+#include <cstdint>
+
 class Component {
   public:
     void set_register(uint8_t reg, uint8_t array=0) {

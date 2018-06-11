@@ -11,6 +11,10 @@
 
 class Channel : Component{
   public:
+    Channel(uint8_t newid) {
+      id = newid;
+    }
+      
     void set_frequency(uint16_t freq) {
       frequency = freq;
       note_info &= 0xfc;
@@ -38,6 +42,7 @@ class Channel : Component{
     }
 
   private:
+    uint8_t id;
     uint8_t frequency;  
     uint8_t note_info;
 };
