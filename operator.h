@@ -1,3 +1,6 @@
+#ifndef OPERATOR_H
+#define OPERATOR_H
+
 #include <cstdint>
 #include "component.h"
 
@@ -63,4 +66,6 @@ class Operator : Component {
     uint8_t sustain_release;
     uint8_t waveform;
 };
+
+#endif
 

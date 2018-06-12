@@ -1,3 +1,6 @@
+#ifndef COMPONENT_H
+#define COMPONENT_H
+
 #include <cstdint>
 
 class Component {
@@ -27,3 +30,5 @@ class Component {
   protected:
     uint8_t flags;
 };
+
+#endif
