@@ -1,5 +1,5 @@
 #include <cstdint>
-#include "component.h"
+#include "operator.h"
 
 #define CH_NOTE_ON 32
 
@@ -11,7 +11,7 @@
 
 class Channel : Component{
   public:
-    Channel(uint8_t newid) {
+    Channel(uint8_t newid) : operators{0,1,2,3} {
       id = newid;
     }
       
@@ -42,6 +42,7 @@ class Channel : Component{
     }
 
   private:
+    Operator operators[4];
     uint8_t id;
     uint8_t frequency;  
     uint8_t note_info;
