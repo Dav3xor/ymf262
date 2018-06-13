@@ -60,6 +60,12 @@ class Operator : Component {
     }
 
   private:
+    constexpr static uint8_t operator_ids [6][4] = { {0,  3,  6,  9},
+                                                     {1,  4,  7,  10},
+                                                     {2,  5,  8,  11},
+                                                     {18, 21, 24, 27},
+                                                     {19, 22, 25, 28},
+                                                     {20, 23, 26, 29} };
     uint8_t id;
     uint8_t levels;
     uint8_t attack_decay;
