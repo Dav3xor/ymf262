@@ -8,6 +8,7 @@
 #define SYNTH_TREM_DEPTH 128
 #define SYNTH_VIBR_DEPTH 64
 #define NUM_CHANNELS 6
+#define NUM_OPERATORS 4
 
 class Synth : Component {
   public:
@@ -15,7 +16,8 @@ class Synth : Component {
       // init synth...
     }
   private:
-    Channel channels[6];
+    Channel channels[NUM_CHANNELS];
+    Operator operators[NUM_OPERATORS];
 };
 
 #endif

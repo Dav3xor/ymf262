@@ -42,7 +42,6 @@ class Channel : Component{
     }
 
   private:
-    Operator operators[4];
     constexpr static uint8_t channel_ids [] = {0,1,2,9,10,11};
 
     uint8_t id;
