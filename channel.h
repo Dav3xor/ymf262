@@ -11,7 +11,7 @@
 
 class Channel : Component{
   public:
-    Channel(uint8_t newid) : operators{0,1,2,3} {
+    Channel(uint8_t newid) {
       id = newid;
     }
       

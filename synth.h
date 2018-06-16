@@ -12,7 +12,7 @@
 
 class Synth : Component {
   public:
-    Synth(): channels{0,1,2,3,4,5} {
+    Synth(): channels{0,1,2,3,4,5}, operators{0,1,2,3} {
       // init synth...
     }
   private:
