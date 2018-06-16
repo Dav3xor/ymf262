@@ -7,6 +7,7 @@
 
 #define SYNTH_TREM_DEPTH 128
 #define SYNTH_VIBR_DEPTH 64
+#define NUM_CHANNELS 6
 
 class Synth : Component {
   public:
