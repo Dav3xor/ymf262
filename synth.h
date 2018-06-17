@@ -108,7 +108,7 @@ class Operator : Component {
       printf("set level -------\n"); 
       for(int i = 0; i < 6; i++) {
         printf("channel:    %d\n",i);
-        set_register(0x20+operator_map[0][i]);
+        set_register(0x20+operator_map[i][0]);
         set_data(levels);
       }
     }
