@@ -23,6 +23,9 @@
 
 class Component {
   public:
+    Component() {
+      flags = 0;
+    }
     void set_register(uint8_t reg, uint8_t array=0) {
       printf(" - register %d array %d\n", reg, array);
       // set the current register
@@ -94,7 +97,7 @@ class Channel : Component{
 };
 
 
-class Operator : Component {
+class Operator : public Component {
   public:
     Operator(uint8_t newid) {
       id              = newid;
@@ -112,6 +115,15 @@ class Operator : Component {
         set_data(levels);
       }
     }
+    void send_flags(void) {
+      printf("set op flags -------\n"); 
+      for(int i = 0; i < 6; i++) {
+        printf("channel:    %d\n",i);
+        set_register(0x40+operator_map[i][0]);
+        set_data(flags);
+      }
+    }
+
 
     void set_multiplier(uint8_t multiplier) {
       flags &= 0xf0;
