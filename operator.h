@@ -19,7 +19,12 @@ class Operator : Component {
       sustain_release = 0;
       waveform        = 0;
     }
-
+    void send_levels(void)
+      for(int i = 0; i < NUM_CHANNELS; i++) {
+        set_register(0x20+operatormap[0][i]);
+        set_data(levels);
+      }
+    }
     void set_multiplier(uint8_t multiplier) {
       flags &= 0xf0;
       flags |= (multiplier & 0x0f);
@@ -60,7 +65,7 @@ class Operator : Component {
     }
 
   private:
-    constexpr static uint8_t operator_ids [6][4] = { {0,  3,  6,  9},
+    constexpr static uint8_t operator_map [6][4] = { {0,  3,  6,  9},
                                                      {1,  4,  7,  10},
                                                      {2,  5,  8,  11},
                                                      {18, 21, 24, 27},
