@@ -1,5 +1,5 @@
 #include <cstdint>
-#include "operator.h"
+#include "component.h"
 
 #define CH_NOTE_ON 32
 

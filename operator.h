@@ -2,6 +2,7 @@
 #define OPERATOR_H
 
 #include <cstdint>
+#include <cstdio>
 #include "component.h"
 
 #define OP_TREMOLO 128
@@ -19,12 +20,16 @@ class Operator : Component {
       sustain_release = 0;
       waveform        = 0;
     }
-    void send_levels(void)
-      for(int i = 0; i < NUM_CHANNELS; i++) {
-        set_register(0x20+operatormap[0][i]);
+
+    void send_levels(void) {
+      printf("set level -------\n"); 
+      for(int i = 0; i < 6; i++) {
+        printf("channel:    %d\n",i);
+        set_register(0x20+operator_map[0][i]);
         set_data(levels);
       }
     }
+
     void set_multiplier(uint8_t multiplier) {
       flags &= 0xf0;
       flags |= (multiplier & 0x0f);
