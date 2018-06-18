@@ -66,20 +66,18 @@ class Channel : Component{
       
     void send_frequency(void) {
       printf("set op flags -------\n"); 
-      for(int i = 0; i < 6; i++) {
-        printf("channel:    %d\n",i);
-        // TODO: I think this isn't quite right...
-        set_register(0xA0+channel_ids[i]);
-        set_data(frequency);
-        set_register(0xB0+channel_ids[i]);
-        set_data(note_info);
-      }
+      printf("channel:    %d\n", channel_ids[id]);
+      // TODO: I think this isn't quite right...
+      set_register(0xA0+channel_ids[id]);
+      set_data(frequency);
+      set_register(0xB0+channel_ids[id]);
+      set_data(note_info);
     }
 
     void set_frequency(uint16_t freq) {
       frequency = freq;
       note_info &= 0xfc;
-      note_info |= (frequency >> 8);
+      note_info |= ((freq >> 8) & 0x03);
     }
 
     void set_note_on(void) {
