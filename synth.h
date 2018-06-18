@@ -60,8 +60,22 @@ class Channel : Component{
   public:
     Channel(uint8_t newid) {
       id = newid;
+      frequency = 0;
+      note_info = 0;
     }
       
+    void send_frequency(void) {
+      printf("set op flags -------\n"); 
+      for(int i = 0; i < 6; i++) {
+        printf("channel:    %d\n",i);
+        // TODO: I think this isn't quite right...
+        set_register(0xA0+channel_ids[i]);
+        set_data(frequency);
+        set_register(0xB0+channel_ids[i]);
+        set_data(note_info);
+      }
+    }
+
     void set_frequency(uint16_t freq) {
       frequency = freq;
       note_info &= 0xfc;
@@ -123,7 +137,24 @@ class Operator : public Component {
         set_data(flags);
       }
     }
-
+    
+    void send_ad(void) {
+      printf("set attack/decay -------\n"); 
+      for(int i = 0; i < 6; i++) {
+        printf("channel:    %d\n",i);
+        set_register(0x60+operator_map[i][0]);
+        set_data(attack_decay);
+      }
+    }
+    
+    void send_sr(void) {
+      printf("set sustain/release -------\n"); 
+      for(int i = 0; i < 6; i++) {
+        printf("channel:    %d\n",i);
+        set_register(0x80+operator_map[i][0]);
+        set_data(sustain_release);
+      }
+    }
 
     void set_multiplier(uint8_t multiplier) {
       flags &= 0xf0;
