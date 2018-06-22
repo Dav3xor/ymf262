@@ -56,7 +56,7 @@ class Component {
 
 
 
-class Channel : Component{
+class Channel : public Component{
   public:
     Channel(uint8_t newid) {
       id = newid;
@@ -93,13 +93,21 @@ class Channel : Component{
       note_info |= ((block & 0x07) << 2);
     }
     void set_feedback(uint8_t feedback) {
-      note_info &= 0xf1;
-      note_info |= ((feedback & 0x07) << 1);
+      flags &= 0xf1;
+      flags |= ((feedback & 0x07) << 1);
     }
     void set_syn(void) {
       flags |= CH_SYN;
     }
 
+    void send_flags(void) {
+      printf("set ch flags -------\n"); 
+      for(int i = 0; i < 6; i++) {
+        printf("channel:    %d\n",i);
+        set_register(0xC0+channel_ids[id]);
+        set_data(flags);
+      }
+    }
   private:
     constexpr static uint8_t channel_ids [] = {0,1,2,9,10,11};
 

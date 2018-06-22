@@ -45,7 +45,8 @@ int main(void) {
   o.set_sustain(255);
   o.send_sr();
   */
-  
+ 
+  /* 
   c.set_frequency(255);
   c.send_frequency();
   c.set_frequency(256);
@@ -65,7 +66,11 @@ int main(void) {
   c.send_frequency();
   c.set_block_number(100);
   c.send_frequency();
+  */
   
+  c.set_flag(CH_RIGHT);
+  c.send_flags();
+   
 }
 
 constexpr uint8_t Operator::operator_map[6][4];
