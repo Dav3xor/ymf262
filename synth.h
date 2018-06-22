@@ -48,8 +48,9 @@ class Component {
     }
 
     void unset_flag(uint8_t flag) {
-      flags &= ~(1 << flag);
+      flags &= ~(flag);
     }
+
   protected:
     uint8_t flags;
 };

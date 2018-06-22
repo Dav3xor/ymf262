@@ -70,6 +70,12 @@ int main(void) {
   
   c.set_flag(CH_RIGHT);
   c.send_flags();
+  c.set_feedback(3); 
+  c.send_flags();
+  c.set_feedback(255); 
+  c.send_flags();
+  c.unset_flag(CH_RIGHT);
+  c.send_flags();
    
 }
 
