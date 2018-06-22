@@ -65,13 +65,22 @@ class Channel : public Component{
     }
       
     void send_frequency(void) {
-      printf("set op flags -------\n"); 
+      printf("set ch freq -------\n"); 
       printf("channel:    %d\n", channel_ids[id]);
       // TODO: I think this isn't quite right...
       set_register(0xA0+channel_ids[id]);
       set_data(frequency);
       set_register(0xB0+channel_ids[id]);
       set_data(note_info);
+    }
+    
+    void send_flags(void) {
+      printf("set ch flags -------\n"); 
+      for(int i = 0; i < 6; i++) {
+        printf("channel:    %d\n",i);
+        set_register(0xC0+channel_ids[id]);
+        set_data(flags);
+      }
     }
 
     void set_frequency(uint16_t freq) {
@@ -100,14 +109,6 @@ class Channel : public Component{
       flags |= CH_SYN;
     }
 
-    void send_flags(void) {
-      printf("set ch flags -------\n"); 
-      for(int i = 0; i < 6; i++) {
-        printf("channel:    %d\n",i);
-        set_register(0xC0+channel_ids[id]);
-        set_data(flags);
-      }
-    }
   private:
     constexpr static uint8_t channel_ids [] = {0,1,2,9,10,11};
 
