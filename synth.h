@@ -46,14 +46,21 @@ class Component {
       // 2. wr = low
       // 3. a0 = low
       // 4. a1 = array (2nd argument) 
-      digitalWrite(PIN_CS1, LOW);
+
+      // first fill the shift register
+      digitalWrite(PIN_SRLATCH, LOW);
+      shiftOut(PIN_SRDATA, PIN_SRCLK, MSBFIRST, reg);
+      digitalWrite(PIN_SRLATCH, HIGH);
+
+      // then set all the lines to the ymf262 
       digitalWrite(PIN_RD,  HIGH);
       digitalWrite(PIN_WR,  LOW);
       digitalWrite(PIN_A0,  LOW);
       digitalWrite(PIN_A1,  array);
 
-      digitalWrite(PIN_SRLATCH, LOW);
-      shiftOut(PIN_SRDATA, PIN_SRCLK, MSBFIRST, reg);
+      // select the chip
+      digitalWrite(PIN_CS1, LOW);
+
     }
     void set_data(uint8_t data) {
       printf(" - data     %d\n", data);
