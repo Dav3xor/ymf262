@@ -21,6 +21,18 @@
 #define OP_SUSTAIN 32
 #define OP_KSR     16
 
+#define PIN_CS1    1
+#define PIN_CS2    2
+#define PIN_RD     3
+#define PIN_WR     4
+#define PIN_A0     5
+#define PIN_A1     6
+
+// pins for the shift register
+#define PIN_SRDATA   7
+#define PIN_SRCLK    8
+#define PIN_SRLATCH  9 // RCLK or ST_CP
+ 
 class Component {
   public:
     Component() {
@@ -34,6 +46,14 @@ class Component {
       // 2. wr = low
       // 3. a0 = low
       // 4. a1 = array (2nd argument) 
+      digitalWrite(PIN_CS1, LOW);
+      digitalWrite(PIN_RD,  HIGH);
+      digitalWrite(PIN_WR,  LOW);
+      digitalWrite(PIN_A0,  LOW);
+      digitalWrite(PIN_A1,  array);
+
+      digitalWrite(PIN_SRLATCH, LOW);
+      shiftOut(PIN_SRDATA, PIN_SRCLK, MSBFIRST, reg);
     }
     void set_data(uint8_t data) {
       printf(" - data     %d\n", data);
