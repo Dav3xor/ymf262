@@ -27,11 +27,12 @@
 #define PIN_WR     4
 #define PIN_A0     5
 #define PIN_A1     6
+#define PIN_RST    7
 
 // pins for the shift register
-#define PIN_SRDATA   7
-#define PIN_SRCLK    8
-#define PIN_SRLATCH  9 // RCLK or ST_CP
+#define PIN_SRDATA   10
+#define PIN_SRCLK    11
+#define PIN_SRLATCH  12 // RCLK or ST_CP
  
 class Component {
   public:
@@ -271,6 +272,31 @@ class Synth : Component {
     Synth(): channels{0,1,2,3,4,5}, operators{0,1,2,3} {
       // init synth...
     }
+    void reset(void) {
+      // cycle reset to ensure chip is ready
+      digitalWrite(PIN_CS1,  LOW);
+      digitalWrite(PIN_RST,  HIGH);
+      delayMicroseconds(500);
+
+
+      digitalWrite(PIN_RST,  LOW);
+      digitalWrite(PIN_CS1,  HIGH);
+      delayMicroseconds(500);
+      digitalWrite(PIN_RST,  HIGH);
+      delayMicroseconds(500);
+
+      // turn on OPL3 mode
+      set_register(0x05);
+      set_data(0x01);
+     
+      // turn on 4 operator mode for all 6 4-op channels 
+      set_register(0x04);
+      set_data(0x3F);
+      
+    } 
+
+     
+      
   private:
     Channel channels[NUM_CHANNELS];
     Operator operators[NUM_OPERATORS];
