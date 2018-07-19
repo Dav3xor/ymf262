@@ -1,8 +1,9 @@
 #ifndef SYNTH_H
 #define SYNTH_H
 
-#include <cstdint>
-#include <cstdio>
+#include <avr/io.h>
+
+
 #define SYNTH_TREM_DEPTH 128
 #define SYNTH_VIBR_DEPTH 64
 #define NUM_CHANNELS 6
@@ -20,19 +21,20 @@
 #define OP_VIBRATO 64
 #define OP_SUSTAIN 32
 #define OP_KSR     16
+:w
 
-#define PIN_CS1    1
-#define PIN_CS2    2
-#define PIN_RD     3
-#define PIN_WR     4
-#define PIN_A0     5
-#define PIN_A1     6
-#define PIN_RST    7
+#define PIN_RST    PD2
+#define PIN_CS1    PD3
+#define PIN_CS2    PD4
+//#define PIN_RD     3
+#define PIN_WR     PD5
+#define PIN_A0     PD6
+#define PIN_A1     PD7
 
 // pins for the shift register
-#define PIN_SRDATA   10
-#define PIN_SRCLK    11
-#define PIN_SRLATCH  12 // RCLK or ST_CP
+#define PIN_SRDATA   PC2
+#define PIN_SRCLK    PC5
+#define PIN_SRLATCH  PB2 // RCLK or ST_CP
  
 class Component {
   public:

@@ -1,4 +1,4 @@
-#include <cstdint>
+#include "stdint.h" 
 #include "synth.h"
 
 int main(void) {
