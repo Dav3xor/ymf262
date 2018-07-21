@@ -21,21 +21,57 @@
 #define OP_VIBRATO 64
 #define OP_SUSTAIN 32
 #define OP_KSR     16
-:w
 
-#define PIN_RST    PD2
-#define PIN_CS1    PD3
-#define PIN_CS2    PD4
+#define PIN_RST    PORTD, PD2
+#define PIN_CS1    PORTD, PD3
+#define PIN_CS2    PORTD, PD4
 //#define PIN_RD     3
-#define PIN_WR     PD5
-#define PIN_A0     PD6
-#define PIN_A1     PD7
+#define PIN_WR     PORTD, PD5
+#define PIN_A0     PORTD, PD6
+#define PIN_A1     PORTD, PD7
 
 // pins for the shift register
-#define PIN_SRDATA   PC2
-#define PIN_SRCLK    PC5
-#define PIN_SRLATCH  PB2 // RCLK or ST_CP
+#define PIN_SRDATA   PORTC, PC2
+#define PIN_SRCLK    PORTC, PC5
+#define PIN_SRLATCH  PORTB, PB2 // RCLK or ST_CP
  
+// Some macros that make the code more readable
+#define pin_low(port,pin) port &= ~(1<<pin)
+#define pin_high(port,pin) port |= (1<<pin)
+#define set_input(portdir,pin) portdir &= ~(1<<pin)
+#define set_output(portdir,pin) portdir |= (1<<pin)
+
+void delay_ms(uint8_t ms) {
+  uint16_t delay_count = F_CPU / 17500;
+  volatile uint16_t i;
+
+  while (ms != 0) {
+    for (i=0; i != delay_count; i++);
+    ms--;
+  }
+}
+
+void write_synth(uint8_t data) {
+  for (int i = 8; i <= 0; i++) {
+    if((data>>i)&1) {
+      pin_high(PIN_SRDATA);
+    } else {
+      pin_low(PIN_SRDATA);
+    }
+    delay_ms(1);
+    pin_high(PIN_SRCLK);
+    delay_ms(1);
+    pin_low(PIN_SRCLK);
+  }
+ 
+  delay_ms(1);
+  pin_high(PIN_SRLATCH);
+  delay_ms(1);
+  pin_low(PIN_SRLATCH);
+  delay_ms(1);
+
+}
+
 class Component {
   public:
     Component() {
