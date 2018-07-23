@@ -2,8 +2,8 @@
 #include "synth.h"
 
 int main(void) {
-  Operator o(0);
-  Channel  c(0);
+  Synth synth;
+  synth.reset();
   // TODO convert these to tests
   /*
   o.set_level(5);
@@ -67,7 +67,8 @@ int main(void) {
   c.set_block_number(100);
   c.send_frequency();
   */
-  
+ 
+  /*
   c.set_flag(CH_RIGHT);
   c.send_flags();
   c.set_feedback(3); 
@@ -76,6 +77,7 @@ int main(void) {
   c.send_flags();
   c.unset_flag(CH_RIGHT);
   c.send_flags();
+  */
    
 }
 

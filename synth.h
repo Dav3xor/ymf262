@@ -22,24 +22,31 @@
 #define OP_SUSTAIN 32
 #define OP_KSR     16
 
-#define PIN_RST    PORTD, PD2
-#define PIN_CS1    PORTD, PD3
-#define PIN_CS2    PORTD, PD4
-//#define PIN_RD     3
-#define PIN_WR     PORTD, PD5
-#define PIN_A0     PORTD, PD6
-#define PIN_A1     PORTD, PD7
+#define PIN_RST            PD2
+#define PIN_CS1            PD3
+#define PIN_CS2            PD4
+#define PIN_WR             PD5
+#define PIN_A0             PD6
+#define PIN_A1             PD7
+
+// pin for gate out
+#define PIN_GATE           PC1
 
 // pins for the shift register
-#define PIN_SRDATA   PORTC, PC2
-#define PIN_SRCLK    PORTC, PC5
-#define PIN_SRLATCH  PORTB, PB2 // RCLK or ST_CP
- 
+#define PIN_SRDATA         PC2   //DATA
+#define PIN_SRCLK          PD1   //CLK
+#define PIN_SRLATCH        PB2   //RCLK or ST_CP
+
+
+
 // Some macros that make the code more readable
+
 #define pin_low(port,pin) port &= ~(1<<pin)
 #define pin_high(port,pin) port |= (1<<pin)
 #define set_input(portdir,pin) portdir &= ~(1<<pin)
 #define set_output(portdir,pin) portdir |= (1<<pin)
+#define gate_on() PORTC |= (1<<PIN_GATE)
+#define gate_off() PORTC &= ~(1<<PIN_GATE)
 
 void delay_ms(uint8_t ms) {
   uint16_t delay_count = F_CPU / 17500;
@@ -52,22 +59,22 @@ void delay_ms(uint8_t ms) {
 }
 
 void write_synth(uint8_t data) {
-  for (int i = 8; i <= 0; i++) {
+  for (int i = 8; i <= 0; i--) {
     if((data>>i)&1) {
-      pin_high(PIN_SRDATA);
+      pin_high(PORTC, PIN_SRDATA);
     } else {
-      pin_low(PIN_SRDATA);
+      pin_low(PORTC, PIN_SRDATA);
     }
     delay_ms(1);
-    pin_high(PIN_SRCLK);
+    pin_high(PORTD, PIN_SRCLK);
     delay_ms(1);
-    pin_low(PIN_SRCLK);
+    pin_low(PORTD, PIN_SRCLK);
   }
  
   delay_ms(1);
-  pin_high(PIN_SRLATCH);
+  pin_high(PORTB, PIN_SRLATCH);
   delay_ms(1);
-  pin_low(PIN_SRLATCH);
+  pin_low(PORTB, PIN_SRLATCH);
   delay_ms(1);
 
 }
@@ -78,7 +85,6 @@ class Component {
       flags = 0;
     }
     void set_register(uint8_t reg, uint8_t array=0) {
-      printf(" - register %d array %d\n", reg, array);
       // set the current register
       // 0. cs = low
       // 1. rd = high
@@ -87,26 +93,26 @@ class Component {
       // 4. a1 = array (2nd argument) 
 
       // first fill the shift register
-      digitalWrite(PIN_SRLATCH, LOW);
-      shiftOut(PIN_SRDATA, PIN_SRCLK, MSBFIRST, reg);
-      digitalWrite(PIN_SRLATCH, HIGH);
+      write_synth(reg);
 
       // then set all the lines to the ymf262 
-      digitalWrite(PIN_RD,  HIGH);
-      digitalWrite(PIN_WR,  LOW);
-      digitalWrite(PIN_A0,  LOW);
-      digitalWrite(PIN_A1,  array);
+      pin_low(PORTD, PIN_WR);
+      pin_low(PORTD, PIN_A0);
+      if(array) {
+        pin_high(PORTD, PIN_A1);
+      } else {
+        pin_low(PORTD, PIN_A1);
+      } 
 
       // select the chip
-      digitalWrite(PIN_CS1, LOW);
+      pin_low(PORTD, PIN_CS1);
 
-      delay(100);
+      delay_ms(100);
 
-      digitalWrite(PIN_CS1, HIGH);
+      pin_high(PORTD, PIN_CS1);
 
     }
     void set_data(uint8_t data) {
-      printf(" - data     %d\n", data);
       // set the data for the given register
       // 0. cs = low
       // 1. rd = high
@@ -114,21 +120,16 @@ class Component {
       // 3. a0 = high
 
       // first fill the shift register
-      digitalWrite(PIN_SRLATCH, LOW);
-      shiftOut(PIN_SRDATA, PIN_SRCLK, MSBFIRST, data);
-      digitalWrite(PIN_SRLATCH, HIGH);
+      write_synth(data);
 
       // then set all the lines to the ymf262 
-      digitalWrite(PIN_RD,  HIGH);
-      digitalWrite(PIN_WR,  LOW);
-      digitalWrite(PIN_A0,  HIGH);
+      pin_low(PORTD, PIN_WR);
+      pin_high(PORTD, PIN_A0);
 
+      pin_low(PORTD, PIN_CS1);
+      delay_ms(100);
       // select the chip
-      digitalWrite(PIN_CS1, LOW);
-
-      delay(100);
-
-      digitalWrite(PIN_CS1, HIGH);
+      pin_high(PORTD, PIN_CS1);
     }
     void set_flag(uint8_t flag) {
       flags |= flag;
@@ -153,8 +154,6 @@ class Channel : public Component{
     }
       
     void send_frequency(void) {
-      printf("set ch freq -------\n"); 
-      printf("channel:    %d\n", channel_ids[id]);
       // TODO: I think this isn't quite right...
       set_register(0xA0+channel_ids[id]);
       set_data(frequency);
@@ -163,9 +162,7 @@ class Channel : public Component{
     }
     
     void send_flags(void) {
-      printf("set ch flags -------\n"); 
       for(int i = 0; i < 6; i++) {
-        printf("channel:    %d\n",i);
         set_register(0xC0+channel_ids[id]);
         set_data(flags);
       }
@@ -217,35 +214,27 @@ class Operator : public Component {
     }
 
     void send_levels(void) {
-      printf("set level -------\n"); 
       for(int i = 0; i < 6; i++) {
-        printf("channel:    %d\n",i);
         set_register(0x20+operator_map[i][0]);
         set_data(levels);
       }
     }
     void send_flags(void) {
-      printf("set op flags -------\n"); 
       for(int i = 0; i < 6; i++) {
-        printf("channel:    %d\n",i);
         set_register(0x40+operator_map[i][0]);
         set_data(flags);
       }
     }
     
     void send_ad(void) {
-      printf("set attack/decay -------\n"); 
       for(int i = 0; i < 6; i++) {
-        printf("channel:    %d\n",i);
         set_register(0x60+operator_map[i][0]);
         set_data(attack_decay);
       }
     }
     
     void send_sr(void) {
-      printf("set sustain/release -------\n"); 
       for(int i = 0; i < 6; i++) {
-        printf("channel:    %d\n",i);
         set_register(0x80+operator_map[i][0]);
         set_data(sustain_release);
       }
@@ -309,19 +298,28 @@ class Synth : Component {
   public:
     Synth(): channels{0,1,2,3,4,5}, operators{0,1,2,3} {
       // init synth...
+      set_output(DDRC, PIN_GATE);
+      set_output(DDRC, PIN_SRDATA);
+      set_output(DDRD, PIN_SRCLK);
+      set_output(DDRB, PIN_SRLATCH);
+      set_output(DDRD, PIN_WR);
+      set_output(DDRD, PIN_A0);
+      set_output(DDRD, PIN_A1);
+      set_output(DDRD, PIN_CS1);
+      set_output(DDRD, PIN_RST);
     }
     void reset(void) {
       // cycle reset to ensure chip is ready
-      digitalWrite(PIN_CS1,  LOW);
-      digitalWrite(PIN_RST,  HIGH);
-      delayMicroseconds(500);
+      pin_low(PORTD, PIN_CS1);
+      pin_high(PORTD, PIN_RST);
+      delay_ms(500);
 
 
-      digitalWrite(PIN_RST,  LOW);
-      digitalWrite(PIN_CS1,  HIGH);
-      delayMicroseconds(500);
-      digitalWrite(PIN_RST,  HIGH);
-      delayMicroseconds(500);
+      pin_low(PORTD, PIN_RST);
+      pin_high(PORTD, PIN_CS1);
+      delay_ms(500);
+      pin_high(PORTD, PIN_RST);
+      delay_ms(500);
 
       // turn on OPL3 mode
       set_register(0x05);
@@ -330,6 +328,12 @@ class Synth : Component {
       // turn on 4 operator mode for all 6 4-op channels 
       set_register(0x04);
       set_data(0x3F);
+      while (1) {
+        gate_on();
+        delay_ms(100);
+        gate_off();
+        delay_ms(100);
+      }
       
     } 
 
