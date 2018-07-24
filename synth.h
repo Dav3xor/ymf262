@@ -69,6 +69,7 @@ void write_synth(uint8_t data) {
     pin_high(PORTD, PIN_SRCLK);
     delay_ms(1);
     pin_low(PORTD, PIN_SRCLK);
+    delay_ms(1);
   }
  
   delay_ms(1);
@@ -309,17 +310,18 @@ class Synth : Component {
       set_output(DDRD, PIN_RST);
     }
     void reset(void) {
+      /*
       // cycle reset to ensure chip is ready
       pin_low(PORTD, PIN_CS1);
       pin_high(PORTD, PIN_RST);
-      delay_ms(500);
+      delay_ms(5);
 
 
       pin_low(PORTD, PIN_RST);
       pin_high(PORTD, PIN_CS1);
-      delay_ms(500);
+      delay_ms(5);
       pin_high(PORTD, PIN_RST);
-      delay_ms(500);
+      delay_ms(5);
 
       // turn on OPL3 mode
       set_register(0x05);
@@ -328,10 +330,14 @@ class Synth : Component {
       // turn on 4 operator mode for all 6 4-op channels 
       set_register(0x04);
       set_data(0x3F);
+      */
+      pin_high(PIN_RST);
+      delay_ms(5);
+      write_synth(0xAA);
       while (1) {
-        gate_on();
+        pin_high(PORTC, PIN_GATE);
         delay_ms(100);
-        gate_off();
+        pin_low(PORTC, PIN_GATE);
         delay_ms(100);
       }
       
