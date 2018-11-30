@@ -4,6 +4,15 @@
 int main(void) {
   Synth synth;
   synth.reset();
+
+
+
+
+
+
+
+
+
   // TODO convert these to tests
   /*
   o.set_level(5);
@@ -82,4 +91,6 @@ int main(void) {
 }
 
 constexpr uint8_t Operator::operator_map[6][4];
+constexpr uint8_t Operator::register_map[36];
 constexpr uint8_t Channel::channel_ids [];
+constexpr uint8_t Channel::register_ids [];
